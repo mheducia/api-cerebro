@@ -32,7 +32,7 @@ async def chat_endpoint(request: ChatRequest):
                         "Content-Type": "application/json"
                     },
                     json={
-                            "systemInstruction": {"parts": [{"text": os.getenv("SYSTEM_PROMPT")}]}, 
+                            "systemInstruction": {"parts": [{"text": system_prompt}]}, 
                             "contents": [{"parts": [{"text": request.prompt}]}]
                         },
                     timeout=60.0
