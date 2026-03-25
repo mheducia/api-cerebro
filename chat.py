@@ -23,7 +23,7 @@ async def chat_endpoint(request: ChatRequest):
             return {"response": "Mensagem Mockada para testes. Gemini não foi chamado."};
         else:
             system_prompt=os.getenv("SYSTEM_PROMPT").replace("\\n", "\n")
-            prompt = f"{system_prompt}{request.prompt}""";
+            prompt = f"{request.prompt}""";
             print(prompt)
             async with httpx.AsyncClient() as client:
                 response = await client.post(
@@ -33,7 +33,7 @@ async def chat_endpoint(request: ChatRequest):
                     },
                     json={
                             "systemInstruction": {"parts": [{"text": os.getenv("SYSTEM_PROMPT")}]}, 
-                            "contents": [{"parts": [{"text": prompt}]}]
+                            "contents": [{"parts": [{"text": request.prompt}]}]
                         },
                     timeout=60.0
                 )
