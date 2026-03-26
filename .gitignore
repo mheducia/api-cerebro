@@ -1,14 +1,19 @@
-*.tar
-*.tar.*
-*.jar
-*.exe
-*.msi
-*.deb
-*.zip
-*.tgz
+# --- GLOBAL / SYSTEM ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
 *.log
-*.log.*
-*.sig
 
-pkg/
-src/
+# Ignora ambientes virtuais e cache do Python
+**/venv/
+**/.venv/
+**/env/
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.python-version
+
+**/*.gz
+**/*.br
