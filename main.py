@@ -23,8 +23,6 @@ def home():
 async def validar_acesso(request: Request, call_next):
     api_key = request.headers.get("X-API-Key");
     API_KEY = os.getenv("API_KEY", "")
-    print(api_key)
-    print(API_KEY)
 
     if api_key != API_KEY:
         return JSONResponse(status_code=403, content={"detail": "Não autorizado"})
