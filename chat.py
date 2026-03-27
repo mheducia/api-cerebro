@@ -156,7 +156,6 @@ async def chat(request: ChatRequest):
                         return
 
                     if response.status_code in (401, 403):
-                        print(f"{gemini_url}&key={gemini_key}")
                         yield "event: error\ndata: Erro de autenticação com o Gemini\n\n"
                         return
 
