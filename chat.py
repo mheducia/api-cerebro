@@ -1,6 +1,6 @@
 
 from asyncio.log import logger
-from http.client import HTTPException
+from fastapi import HTTPException
 import json
 import traceback
 from urllib import response
@@ -18,6 +18,25 @@ router = APIRouter(prefix="/prompt", tags=["prompt"])
 class ChatRequest(BaseModel):
     prompt: str
 
+async def call_gemini(client: httpx.AsyncClient, gemini_url: str, gemini_key: str, payload: dict, system_prompt: str) -> httpx.Response:
+    try:
+        response = await client.post(
+                    f"{gemini_url}?key={gemini_key}",
+                    headers={
+                        "Content-Type": "application/json"
+                    },
+                    json={
+                            "systemInstruction": {"parts": [{"text": system_prompt}]}, 
+                            "contents": [{"parts": [{"text": payload}]}]
+                        },
+                    timeout=60.0
+                )
+        
+        return response
+
+    except (httpx.TimeoutException, httpx.ConnectError, httpx.RequestError):
+            raise
+        
 @router.post("/chat")
 async def chat_endpoint(request: ChatRequest):
     gemini_url    = os.getenv("URL_GEMINI")
@@ -43,17 +62,7 @@ async def chat_endpoint(request: ChatRequest):
         system_prompt=os.getenv("SYSTEM_PROMPT").replace("\\n", "\n")
         
         async with httpx.AsyncClient() as client:
-            response = await client.post(
-                f"{gemini_url}?key={gemini_key}",
-                headers={
-                    "Content-Type": "application/json"
-                },
-                json={
-                        "systemInstruction": {"parts": [{"text": system_prompt}]}, 
-                        "contents": [{"parts": [{"text": request.prompt}]}]
-                    },
-                timeout=60.0
-            )
+            response = await call_gemini(client, gemini_url, gemini_key, request.prompt, system_prompt)
                             
         if response.status_code == 400:
             print(f"Requisição inválida para o Gemini: {response.text[:200]}")
