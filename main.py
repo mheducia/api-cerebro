@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from urllib3 import request
 from chat import router as chat_router
 from fastapi.responses import JSONResponse
+from fastapi.security import APIKeyHeader
 
 load_dotenv()
 
@@ -21,7 +22,7 @@ def home():
 
 @app.middleware("http")
 async def validar_acesso(request: Request, call_next):
-    api_key = request.headers.get("X-API-Key");
+    api_key = APIKeyHeader(name="X-API-Key", auto_error=False)
     API_KEY = os.getenv("API_KEY", "")
 
     if api_key != API_KEY:
